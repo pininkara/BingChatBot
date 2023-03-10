@@ -1,0 +1,33 @@
+[
+    {
+        "name": "",
+        "value": "",
+        "domain": "",
+        "hostOnly": false,
+        "path": "",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": "",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1,
+        "storeId": null
+    },
+
+    {
+        "name": "",
+        "value": "",
+        "domain": "",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": "",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 5,
+        "storeId": null
+    }
+]
