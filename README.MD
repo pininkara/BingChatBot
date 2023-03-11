@@ -44,7 +44,7 @@ vim bing.py
 Find the configuration and edit it
 
 ```python
-#Please this config
+#Please replace this config
 BOT_TOKEN = 'REPLACE YOUR BOT TOKEN'
 ALLOWED_USER_IDS = ['XXXXXXXXX', 'XXXXXXXX', 'XXXXXXXX']
 ```

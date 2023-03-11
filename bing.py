@@ -1,20 +1,18 @@
 import telebot
 import asyncio
 import re
+import json
 
 from telebot.async_telebot import AsyncTeleBot
 
 from EdgeGPT import Chatbot, ConversationStyle
 from telebot.util import quick_markup
 
-#Please replace this config
-#Please replace this config
-#Please replace this config
+# Please replace this config
+# Please replace this config
+# Please replace this config
 BOT_TOKEN = 'REPLACE YOUR BOT TOKEN'
 ALLOWED_USER_IDS = ['XXXXXXXXX', 'XXXXXXXX', 'XXXXXXXX']
-
-
-
 
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -46,7 +44,7 @@ def send_reset(message):
 
 @bot.message_handler(func=lambda msg: True)
 def response_all(message):
-    print("Receive:"+message.text)
+    print("Receive: "+message.text)
     if is_allowed(message):
         responseList = asyncio.run(bingChat(message.text))
         bot.reply_to(
@@ -57,7 +55,7 @@ def response_all(message):
 
 @bot.callback_query_handler(func=lambda msg: True)
 def callback_all(callbackQuery):
-    print("callbackQuery：："+callbackQuery.data)
+    print("callbackQuery: "+callbackQuery.data)
     responseList = asyncio.run(bingChat(callbackQuery.data))
     bot.reply_to(
         callbackQuery.message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
@@ -65,6 +63,10 @@ def callback_all(callbackQuery):
 
 async def bingChat(messageText):
     response_dict = await gbot.ask(prompt=messageText, conversation_style=ConversationStyle.creative)
+
+    json_str= json.dumps(response_dict)
+    print("JSON: \n"json_str)
+
     response = re.sub(r'\[\^\d\^\]', '',
                       response_dict['item']['messages'][1]['text'])
     suggestedResponses0 = re.sub(
@@ -77,8 +79,13 @@ async def bingChat(messageText):
         'throttling']['maxNumUserMessagesInConversation']
     numUserMessagesInConversation = response_dict['item']['throttling']['numUserMessagesInConversation']
     response = response+"\n----------\n"
-    response = response+"MessagesInConversation : %d / %d" % (
+    response = response+"Messages In Conversation : %d / %d" % (
         numUserMessagesInConversation, maxNumUserMessagesInConversation)
+
+    if numUserMessagesInConversation >= maxNumUserMessagesInConversation:
+        await gbot.reset()
+        response = response+"\n Automatic reset succeeded🎉"
+
     if (len(response_dict['item']['messages'][1]['sourceAttributions']) >= 3):
         providerDisplayName0 = re.sub(
             r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['sourceAttributions'][0]['providerDisplayName'])
