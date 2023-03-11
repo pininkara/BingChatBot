@@ -64,27 +64,43 @@ def callback_all(callbackQuery):
 async def bingChat(messageText):
     response_dict = await gbot.ask(prompt=messageText, conversation_style=ConversationStyle.creative)
 
-    json_str= json.dumps(response_dict)
-    print("JSON: \n"json_str)
+    json_str = json.dumps(response_dict)
+    print("JSON: \n"+json_str)
 
-    response = re.sub(r'\[\^\d\^\]', '',
-                      response_dict['item']['messages'][1]['text'])
-    suggestedResponses0 = re.sub(
-        r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['suggestedResponses'][0]['text'])
-    suggestedResponses1 = re.sub(
-        r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['suggestedResponses'][1]['text'])
-    suggestedResponses2 = re.sub(
-        r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['suggestedResponses'][2]['text'])
-    maxNumUserMessagesInConversation = response_dict['item'][
-        'throttling']['maxNumUserMessagesInConversation']
-    numUserMessagesInConversation = response_dict['item']['throttling']['numUserMessagesInConversation']
-    response = response+"\n----------\n"
-    response = response+"Messages In Conversation : %d / %d" % (
-        numUserMessagesInConversation, maxNumUserMessagesInConversation)
+    if 'text' in response_dict['item']['messages'][1]:
+        response = re.sub(r'\[\^\d\^\]', '',
+                          response_dict['item']['messages'][1]['text'])
+    else:
+        response = "Something wrong. Please reset chat"
+
+    if 'suggestedResponses' in response_dict['item']['messages'][1]:
+        suggestedResponses0 = re.sub(
+            r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['suggestedResponses'][0]['text'])
+        suggestedResponses1 = re.sub(
+            r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['suggestedResponses'][1]['text'])
+        suggestedResponses2 = re.sub(
+            r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['suggestedResponses'][2]['text'])
+        markup = quick_markup({
+            suggestedResponses0: {'callback_data': suggestedResponses0},
+            suggestedResponses1: {'callback_data': suggestedResponses1},
+            suggestedResponses2: {'callback_data': suggestedResponses2}
+        }, row_width=1)
+    else:
+        markup = quick_markup({
+            'No Suggested Responses': {'url': 'https://bing.com/chat'}
+        }, row_width=1)
+
+    if 'maxNumUserMessagesInConversation' in response_dict['item']['throttling'] and 'numUserMessagesInConversation' in response_dict['item']['throttling']:
+        maxNumUserMessagesInConversation = response_dict['item'][
+            'throttling']['maxNumUserMessagesInConversation']
+        numUserMessagesInConversation = response_dict['item']['throttling']['numUserMessagesInConversation']
+        response = response+"\n----------\n"
+        response = response+"Messages In Conversation : %d / %d" % (
+            numUserMessagesInConversation, maxNumUserMessagesInConversation)
 
     if numUserMessagesInConversation >= maxNumUserMessagesInConversation:
         await gbot.reset()
-        response = response+"\n Automatic reset succeeded🎉"
+        response = response+"\nAutomatic reset succeeded🎉"
 
     if (len(response_dict['item']['messages'][1]['sourceAttributions']) >= 3):
         providerDisplayName0 = re.sub(
@@ -107,6 +123,7 @@ async def bingChat(messageText):
         response = response + \
             "3.[%s](%s)\n" % (providerDisplayName2, seeMoreUrl2)
 
+    print("问题："+messageText+"\n"+"回复："+response)
     markup = quick_markup({
         suggestedResponses0: {'callback_data': suggestedResponses0},
         suggestedResponses1: {'callback_data': suggestedResponses1},
