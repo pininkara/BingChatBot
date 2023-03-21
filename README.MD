@@ -2,6 +2,10 @@
 
 Bing chat Telegram bot implemented in Python that utilizes unofficial [EdgeChat](https://github.com/acheong08/EdgeGPT) API    
 
+## Known issues
+
+- Different people will use the same conversation
+
 ## Screenshot
 
 ![](assets/screenshot.png)
