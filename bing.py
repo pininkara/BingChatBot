@@ -12,10 +12,10 @@ from telebot.util import quick_markup
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 ALLOWED_USER_IDS = os.getenv('ALLOWED_USER_IDS').split(',')
-
+COOKIE_PATH = os.getenv('COOKIE_PATH', './cookie.json')
 
 bot = telebot.TeleBot(BOT_TOKEN)
-gbot = Chatbot(cookiePath='./cookie.json')
+gbot = Chatbot(cookiePath=COOKIE_PATH)
 not_allow_info = '⚠️You are not authorized to use this bot⚠️'
 
 markup = quick_markup({

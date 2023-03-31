@@ -44,6 +44,12 @@ export BOT_TOKEN='REPLACE YOUR BOT TOKEN'
 export ALLOWED_USER_IDS='XXXXXXXXX,XXXXXXXX,XXXXXXXX'
 ```
 
+Optional path to `cookies.json` file:
+
+```shell
+export COOKIE_PATH='REPLACE YOUR COOKIE PATH'
+```
+
 ## Run
 
 ```shell
