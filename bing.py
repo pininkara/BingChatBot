@@ -2,21 +2,20 @@ import telebot
 import asyncio
 import re
 import json
+import os
 
 from telebot.async_telebot import AsyncTeleBot
 
 from EdgeGPT import Chatbot, ConversationStyle
 from telebot.util import quick_markup
 
-# Please replace this config
-# Please replace this config
-# Please replace this config
-BOT_TOKEN = 'REPLACE YOUR BOT TOKEN'
-ALLOWED_USER_IDS = ['XXXXXXXXX', 'XXXXXXXX', 'XXXXXXXX']
 
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+ALLOWED_USER_IDS = os.getenv('ALLOWED_USER_IDS').split(',')
+COOKIE_PATH = os.getenv('COOKIE_PATH', './cookie.json')
 
 bot = telebot.TeleBot(BOT_TOKEN)
-gbot = Chatbot(cookiePath='./cookie.json')
+gbot = Chatbot(cookiePath=COOKIE_PATH)
 not_allow_info = '⚠️You are not authorized to use this bot⚠️'
 
 markup = quick_markup({
