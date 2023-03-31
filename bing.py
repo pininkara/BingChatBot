@@ -122,7 +122,6 @@ async def bingChat(messageText):
         response = response + \
             "3.[%s](%s)\n" % (providerDisplayName2, seeMoreUrl2)
 
-    print("问题："+messageText+"\n"+"回复："+response)
     markup = quick_markup({
         suggestedResponses0: {'callback_data': suggestedResponses0},
         suggestedResponses1: {'callback_data': suggestedResponses1},
