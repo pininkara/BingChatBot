@@ -1,6 +1,6 @@
 # Description
 
-Bing chat Telegram bot implemented in Python that utilizes unofficial [EdgeChat](https://github.com/acheong08/EdgeGPT) API    
+Bing chat Telegram bot implemented in Python that utilizes unofficial [EdgeChat](https://github.com/acheong08/EdgeGPT) API
 
 ## Known issues
 
@@ -37,20 +37,11 @@ Bing chat Telegram bot implemented in Python that utilizes unofficial [EdgeChat]
 pip install -r requirements.txt
 ```
 
-## Replace config
-
-Edit `bing.py`
+## Set environment variables
 
 ```shell
-vim bing.py
-```
-
-Find the configuration and edit it
-
-```python
-#Please replace this config
-BOT_TOKEN = 'REPLACE YOUR BOT TOKEN'
-ALLOWED_USER_IDS = ['XXXXXXXXX', 'XXXXXXXX', 'XXXXXXXX']
+export BOT_TOKEN='REPLACE YOUR BOT TOKEN'
+export ALLOWED_USER_IDS='XXXXXXXXX,XXXXXXXX,XXXXXXXX'
 ```
 
 ## Run
