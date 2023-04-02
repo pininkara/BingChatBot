@@ -80,9 +80,9 @@ async def bingChat(messageText):
         suggestedResponses2 = re.sub(
             r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['suggestedResponses'][2]['text'])
         markup = quick_markup({
-            suggestedResponses0: {'callback_data': suggestedResponses0},
-            suggestedResponses1: {'callback_data': suggestedResponses1},
-            suggestedResponses2: {'callback_data': suggestedResponses2}
+            suggestedResponses0: {'callback_data': suggestedResponses0[0:21]},
+            suggestedResponses1: {'callback_data': suggestedResponses1[0:21]},
+            suggestedResponses2: {'callback_data': suggestedResponses2[0:21]}
         }, row_width=1)
     else:
         markup = quick_markup({
@@ -123,9 +123,9 @@ async def bingChat(messageText):
             "3.[%s](%s)\n" % (providerDisplayName2, seeMoreUrl2)
 
     markup = quick_markup({
-        suggestedResponses0: {'callback_data': suggestedResponses0},
-        suggestedResponses1: {'callback_data': suggestedResponses1},
-        suggestedResponses2: {'callback_data': suggestedResponses2}
+        suggestedResponses0: {'callback_data': suggestedResponses0[0:21]},
+        suggestedResponses1: {'callback_data': suggestedResponses1[0:21]},
+        suggestedResponses2: {'callback_data': suggestedResponses2[0:21]}
     }, row_width=1)
     responseList = [response, markup]
     return responseList
