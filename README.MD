@@ -4,7 +4,7 @@ Bing chat Telegram bot implemented in Python that utilizes unofficial [EdgeChat]
 
 ## Known issues
 
-- Different people will use the same conversation
+- ~~Different people will use the same conversation~~（fixed）
 
 ## Screenshot
 
