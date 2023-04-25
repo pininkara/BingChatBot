@@ -49,8 +49,8 @@ def response_all(message):
     if is_allowed(message):
         responseList = asyncio.run(bingChat(message.text, message))
 
-        if len(callbackQuery.message) > 4095:
-            for x in range(0, len(callbackQuery.message), 4095):
+        if len(responseList[0]) > 4095:
+            for x in range(0, len(responseList[0]), 4095):
                 bot.reply_to(
                     callbackQuery.message, responseList[0][x:x+4095], parse_mode='Markdown', reply_markup=responseList[1])
         else:
@@ -63,11 +63,9 @@ def response_all(message):
 def callback_all(callbackQuery):
     print("callbackQuery: " + callbackQuery.data)
     responseList = asyncio.run(bingChat(callbackQuery.data, callbackQuery))
-    bot.reply_to(
-        callbackQuery.message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
     
-    if len(callbackQuery.message) > 4095:
-        for x in range(0, len(callbackQuery.message), 4095):
+    if len(responseList[0]) > 4095:
+        for x in range(0, len(responseList[0]), 4095):
             bot.reply_to(
                 callbackQuery.message, responseList[0][x:x+4095], parse_mode='Markdown', reply_markup=responseList[1])
 
