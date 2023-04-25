@@ -52,10 +52,10 @@ def response_all(message):
         if len(responseList[0]) > 4095:
             for x in range(0, len(responseList[0]), 4095):
                 bot.reply_to(
-                    message, responseList[0][x:x+4095], parse_mode='Markdown', reply_markup=responseList[1])
+                    message, responseList[0][x:x+4095], parse_mode='MarkdownV2', reply_markup=responseList[1])
         else:
             bot.reply_to(
-                    message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
+                    message, responseList[0], parse_mode='MarkdownV2', reply_markup=responseList[1])
     else:
         bot.reply_to(message, not_allow_info)
 
@@ -67,11 +67,11 @@ def callback_all(callbackQuery):
     if len(responseList[0]) > 4095:
         for x in range(0, len(responseList[0]), 4095):
             bot.reply_to(
-                callbackQuery.message, responseList[0][x:x+4095], parse_mode='Markdown', reply_markup=responseList[1])
+                callbackQuery.message, responseList[0][x:x+4095], parse_mode='MarkdownV2', reply_markup=responseList[1])
 
     else:
         bot.reply_to(
-                callbackQuery.message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
+                callbackQuery.message, responseList[0], parse_mode='MarkdownV2', reply_markup=responseList[1])
 
 async def bingChat(messageText, message):
     response_dict = await EDGES[message.from_user.id].ask(prompt=messageText,
