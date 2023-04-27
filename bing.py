@@ -81,7 +81,8 @@ def switch_style(message):
             bot.reply_to(
                 message, "Parameter error , please choose one of (creative,balanced,precise)\n(e.g./switch balanced")
     else:
-        bot.reply_to(message, not_allow_info)
+        bot.reply_to(
+            message, '⚠️You are not authorized to switch conversation style ⚠️')
 
 
 @bot.message_handler(func=lambda msg: True)
@@ -109,7 +110,8 @@ def callback_all(callback_query):
     if len(response_list[0]) > 4095:
         for x in range(0, len(response_list[0]), 4095):
             bot.reply_to(
-                callback_query.message, response_list[0][x:x + 4095], parse_mode='Markdown',
+                callback_query.message, response_list[0][x:x +
+                                                         4095], parse_mode='Markdown',
                 reply_markup=response_list[1])
 
     else:
@@ -153,7 +155,8 @@ async def bing_chat(message_text, message):
             response_dict['item']['throttling']:
         max_num_user_messages_in_conversation = response_dict['item'][
             'throttling']['maxNumUserMessagesInConversation']
-        num_user_messages_in_conversation = response_dict['item']['throttling']['numUserMessagesInConversation']
+        num_user_messages_in_conversation = response_dict[
+            'item']['throttling']['numUserMessagesInConversation']
         response = response + "\n----------\n"
         response = response + "Messages In Conversation : %d / %d" % (
             num_user_messages_in_conversation, max_num_user_messages_in_conversation)
@@ -177,11 +180,11 @@ async def bing_chat(message_text, message):
             r'\[\^\d\^]', '', response_dict['item']['messages'][1]['sourceAttributions'][2]['seeMoreUrl'])
         response = response + "\n----------\nReference:\n"
         response = response + \
-                   "1.[%s](%s)\n" % (provider_display_name0, see_more_url0)
+            "1.[%s](%s)\n" % (provider_display_name0, see_more_url0)
         response = response + \
-                   "2.[%s](%s)\n" % (provider_display_name1, see_more_url1)
+            "2.[%s](%s)\n" % (provider_display_name1, see_more_url1)
         response = response + \
-                   "3.[%s](%s)\n" % (provider_display_name2, see_more_url2)
+            "3.[%s](%s)\n" % (provider_display_name2, see_more_url2)
 
     markup = quick_markup({
         suggested_responses0: {'callback_data': suggested_responses0[0:21]},

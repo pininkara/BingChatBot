@@ -1,3 +1,4 @@
+Language : English [简体中文](README.zh-cn.md)
 # Description
 
 Bing chat Telegram bot implemented in Python that utilizes unofficial [EdgeChat](https://github.com/acheong08/EdgeGPT) API
