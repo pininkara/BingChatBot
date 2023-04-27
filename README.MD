@@ -10,6 +10,14 @@ Bing chat Telegram bot implemented in Python that utilizes unofficial [EdgeChat]
 
 ![](assets/screenshot.png)
 
+## Command list
+
+```
+help - Show help message
+reset - Reset conversation
+switch - Switch conversation style ( creative , balanced , precise )
+```
+
 # Setup
 
 ## Requirements
@@ -39,21 +47,34 @@ pip install -r requirements.txt
 
 ## Set environment variables
 
+### Required variable
+
 ```shell
 export BOT_TOKEN='REPLACE YOUR BOT TOKEN'
 export ALLOWED_USER_IDS='XXXXXXXXX,XXXXXXXX,XXXXXXXX'
 ```
 
-Optional path to `cookies.json` file:
+### Optional variable
 
 ```shell
-export COOKIE_PATH='REPLACE YOUR COOKIE PATH'
+#Default value is './cookie.json'
+export COOKIE_PATH='xxxxxx' 
+
+#Default value is False , if you set True , Anyone can use the robot
+export PUBLIC_MODE=True
+
+
+#If you want to add the bot to the group chat , please set these variables and  give the bot admin permission
+export BOT_ID='@YOURBOTID' #DON'T forget @
+export GROUP_MODE=True #Default value is False
 ```
+If GROUP_MODE == True , The bot will reply to all messages in the group chat , else  the bot will only reply to @ messages in the group chat
+Private chat will always reply
 
 ## Run
 
 ```shell
-python bing.py
+python bing.py 
 ```
 
 
