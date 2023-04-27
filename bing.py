@@ -16,8 +16,8 @@ COOKIE_PATH = os.getenv('COOKIE_PATH', './cookie.json')
 bot = telebot.TeleBot(BOT_TOKEN)
 EDGES = {}
 for user in ALLOWED_USER_IDS:
-    EDGES[int(user)] = Chatbot(cookiePath=COOKIE_PATH)
-# gbot = Chatbot(cookiePath=COOKIE_PATH)
+    EDGES[int(user)] = Chatbot(cookie_path=COOKIE_PATH)
+
 not_allow_info = '⚠️You are not authorized to use this bot⚠️'
 
 markup = quick_markup({
@@ -52,26 +52,28 @@ def response_all(message):
         if len(responseList[0]) > 4095:
             for x in range(0, len(responseList[0]), 4095):
                 bot.reply_to(
-                    message, responseList[0][x:x+4095], parse_mode='Markdown', reply_markup=responseList[1])
+                    message, responseList[0][x:x + 4095], parse_mode='Markdown', reply_markup=responseList[1])
         else:
             bot.reply_to(
-                    message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
+                message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
     else:
         bot.reply_to(message, not_allow_info)
+
 
 @bot.callback_query_handler(func=lambda msg: True)
 def callback_all(callbackQuery):
     print("callbackQuery: " + callbackQuery.data)
     responseList = asyncio.run(bingChat(callbackQuery.data, callbackQuery))
-    
+
     if len(responseList[0]) > 4095:
         for x in range(0, len(responseList[0]), 4095):
             bot.reply_to(
-                callbackQuery.message, responseList[0][x:x+4095], parse_mode='Markdown', reply_markup=responseList[1])
+                callbackQuery.message, responseList[0][x:x + 4095], parse_mode='Markdown', reply_markup=responseList[1])
 
     else:
         bot.reply_to(
-                callbackQuery.message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
+            callbackQuery.message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
+
 
 async def bingChat(messageText, message):
     response_dict = await EDGES[message.from_user.id].ask(prompt=messageText,
@@ -131,11 +133,11 @@ async def bingChat(messageText, message):
             r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['sourceAttributions'][2]['seeMoreUrl'])
         response = response + "\n----------\nReference:\n"
         response = response + \
-                   "1.[%s](%s)\n" % (providerDisplayName0, seeMoreUrl0)
+            "1.[%s](%s)\n" % (providerDisplayName0, seeMoreUrl0)
         response = response + \
-                   "2.[%s](%s)\n" % (providerDisplayName1, seeMoreUrl1)
+            "2.[%s](%s)\n" % (providerDisplayName1, seeMoreUrl1)
         response = response + \
-                   "3.[%s](%s)\n" % (providerDisplayName2, seeMoreUrl2)
+            "3.[%s](%s)\n" % (providerDisplayName2, seeMoreUrl2)
 
     markup = quick_markup({
         suggestedResponses0: {'callback_data': suggestedResponses0[0:21]},
