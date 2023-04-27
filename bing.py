@@ -48,19 +48,30 @@ def response_all(message):
     print("Receive: " + message.text)
     if is_allowed(message):
         responseList = asyncio.run(bingChat(message.text, message))
-        bot.reply_to(
-            message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
+
+        if len(responseList[0]) > 4095:
+            for x in range(0, len(responseList[0]), 4095):
+                bot.reply_to(
+                    message, responseList[0][x:x+4095], parse_mode='Markdown', reply_markup=responseList[1])
+        else:
+            bot.reply_to(
+                    message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
     else:
         bot.reply_to(message, not_allow_info)
-
 
 @bot.callback_query_handler(func=lambda msg: True)
 def callback_all(callbackQuery):
     print("callbackQuery: " + callbackQuery.data)
     responseList = asyncio.run(bingChat(callbackQuery.data, callbackQuery))
-    bot.reply_to(
-        callbackQuery.message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
+    
+    if len(responseList[0]) > 4095:
+        for x in range(0, len(responseList[0]), 4095):
+            bot.reply_to(
+                callbackQuery.message, responseList[0][x:x+4095], parse_mode='Markdown', reply_markup=responseList[1])
 
+    else:
+        bot.reply_to(
+                callbackQuery.message, responseList[0], parse_mode='Markdown', reply_markup=responseList[1])
 
 async def bingChat(messageText, message):
     response_dict = await EDGES[message.from_user.id].ask(prompt=messageText,
