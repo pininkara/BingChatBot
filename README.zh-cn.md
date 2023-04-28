@@ -65,7 +65,10 @@ export COOKIE_PATH='xxxxxx'
 export PUBLIC_MODE=False
 ```
 
+:warning:即使设置PUBLIC_MODE为True，也请设置ALLOWED_USER_IDS，因为只有ALLOWED_USER_IDS才能切换对话风格
+
 如果你想将bot添加至群聊，请设置这些环境变量，并授予bot管理员权限
+
 ```shell
 export BOT_ID='@YOURBOTID' #别忘了@
 export GROUP_MODE=False #默认值为 False

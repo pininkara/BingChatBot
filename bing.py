@@ -1,5 +1,4 @@
 import asyncio
-import json
 import os
 import re
 
@@ -14,13 +13,13 @@ COOKIE_PATH = os.getenv('COOKIE_PATH', './cookie.json')
 GROUP_MODE = os.getenv('GROUP_MODE', False)
 PUBLIC_MODE = os.getenv('PUBLIC_MODE', False)
 
-print("The startup is successful, the configuration is as follows : ")
+print("\033[1;33mThe startup is successful, the configuration is as follows : ")
 print("BOT_TOKEN: " + BOT_TOKEN)
 print("ALLOWED_USER_IDS: ")
 print(ALLOWED_USER_IDS)
 print("COOKIE_PATH: " + COOKIE_PATH)
 print("GROUP_MODE: " + str(GROUP_MODE))
-print("PUBLIC_MODE: " + str(PUBLIC_MODE))
+print("PUBLIC_MODE: " + str(PUBLIC_MODE) + '\033[1;33m')
 
 bot = telebot.TeleBot(BOT_TOKEN)
 EDGES = {}
@@ -57,40 +56,49 @@ def send_reset(message):
 @bot.message_handler(commands=['switch'])
 def switch_style(message):
     if is_allowed(message):
-        list = message.text.split(" ")
-        if len(list) > 1:
-            if list[1] == "creative":
+        message_list = message.text.split(" ")
+        if len(message_list) > 1:
+            if message_list[1] == "creative":
                 conversation_style = ConversationStyle.creative
                 bot.reply_to(
                     message,
                     "Switch successful , current style is creative")
-            elif list[1] == "balanced":
+            elif message_list[1] == "balanced":
                 conversation_style = ConversationStyle.balanced
                 bot.reply_to(
                     message,
                     "Switch successful , current style is balanced")
-            elif list[1] == "precise":
+            elif message_list[1] == "precise":
                 conversation_style = ConversationStyle.precise
                 bot.reply_to(
                     message,
                     "Switch successful , current style is precise")
             else:
                 bot.reply_to(
-                    message, "Parameter error , please choose one of (creative,balanced,precise)\n(e.g./switch balanced")
+                    message,
+                    "Parameter error , please choose one of (creative,balanced,precise)\n(e.g./switch balanced")
         else:
             bot.reply_to(
                 message, "Parameter error , please choose one of (creative,balanced,precise)\n(e.g./switch balanced")
     else:
         bot.reply_to(
-            message, '⚠️You are not authorized to switch conversation style ⚠️')
+            message, '⚠️You are not authorized to switch the conversation style⚠')
 
 
 @bot.message_handler(func=lambda msg: True)
 def response_all(message):
-    print("Message: " + message.text)
+    print('\033[0;32mMessage: ' + message.text)
+    print(
+        'From: ' + message.from_user.first_name + ' ' + message.from_user.first_name + ' @' + message.from_user.username)
+    message_text = ''
     if message.chat.type == "private" or GROUP_MODE or message.text.startswith(BOT_ID):
         if is_allowed(message) or PUBLIC_MODE or message.chat.type == "group":
-            response_list = asyncio.run(bing_chat(message.text, message))
+            if BOT_ID == '':
+                message_text = message.text
+            else:
+                message_text = message.text[len(BOT_ID) + 1:]
+            response_list = asyncio.run(bing_chat(message_text, message))
+            print("\033[1;34mResponse: " + response_list[0])
             if len(response_list[0]) > 4095:
                 for x in range(0, len(response_list[0]), 4095):
                     bot.reply_to(
@@ -100,13 +108,17 @@ def response_all(message):
                     message, response_list[0], parse_mode='Markdown', reply_markup=response_list[1])
         else:
             bot.reply_to(message, not_allow_info)
+    else:
+        print('\033[0;36mUntargeted message, ignored\033[0;36m')
 
 
 @bot.callback_query_handler(func=lambda msg: True)
 def callback_all(callback_query):
-    print("callbackQuery: " + callback_query.data)
+    print("\033[0;32mCallbackQuery: " + callback_query.data)
+    print(
+        'From: ' + callback_query.from_user.first_name + ' ' + callback_query.from_user.first_name + ' @' + callback_query.from_user.username)
     response_list = asyncio.run(bing_chat(callback_query.data, callback_query))
-
+    print("\033[1;34mResponse: " + response_list[0] + '\033[1;34m')
     if len(response_list[0]) > 4095:
         for x in range(0, len(response_list[0]), 4095):
             bot.reply_to(
@@ -125,9 +137,6 @@ async def bing_chat(message_text, message):
     response_dict = await EDGES[message.from_user.id].ask(prompt=message_text,
                                                           conversation_style=conversation_style)
 
-    json_str = json.dumps(response_dict)
-    print("JSON: \n" + json_str)
-
     if 'text' in response_dict['item']['messages'][1]:
         response = re.sub(r'\[\^\d\^]', '',
                           response_dict['item']['messages'][1]['text'])
@@ -142,9 +151,10 @@ async def bing_chat(message_text, message):
         suggested_responses2 = re.sub(
             r'\[\^\d\^]', '', response_dict['item']['messages'][1]['suggestedResponses'][2]['text'])
         markup = quick_markup({
-            suggested_responses0: {'callback_data': suggested_responses0[0:21]},
-            suggested_responses1: {'callback_data': suggested_responses1[0:21]},
-            suggested_responses2: {'callback_data': suggested_responses2[0:21]}
+            suggested_responses0: {'callback_data': suggested_responses0.encode('utf-8')[:64].decode('utf-8', 'ignore')},
+            suggested_responses1: {'callback_data': suggested_responses1.encode('utf-8')[:64].decode('utf-8', 'ignore')},
+            suggested_responses2: {'callback_data': suggested_responses2.encode(
+                'utf-8')[:64].decode('utf-8', 'ignore')}
         }, row_width=1)
     else:
         markup = quick_markup({
@@ -187,9 +197,9 @@ async def bing_chat(message_text, message):
             "3.[%s](%s)\n" % (provider_display_name2, see_more_url2)
 
     markup = quick_markup({
-        suggested_responses0: {'callback_data': suggested_responses0[0:21]},
-        suggested_responses1: {'callback_data': suggested_responses1[0:21]},
-        suggested_responses2: {'callback_data': suggested_responses2[0:21]}
+        suggested_responses0: {'callback_data': suggested_responses0.encode('utf-8')[:64].decode('utf-8', 'ignore')},
+        suggested_responses1: {'callback_data': suggested_responses1.encode('utf-8')[:64].decode('utf-8', 'ignore')},
+        suggested_responses2: {'callback_data': suggested_responses2.encode('utf-8')[:64].decode('utf-8', 'ignore')}
     }, row_width=1)
     response_list = [response, markup]
     return response_list

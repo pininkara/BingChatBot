@@ -65,7 +65,10 @@ export COOKIE_PATH='xxxxxx'
 export PUBLIC_MODE=False
 ```
 
+:warning:Please set ALLOWED_USER_IDS even if PUBLIC_MODE is True , because only ALLOWED_USER_IDS can switch the conversation style 
+
 If you want to add the bot to the group chat , please set these variables and  give the bot admin permission
+
 ```shell
 export BOT_ID='@YOURBOTID' #DON'T forget @
 export GROUP_MODE=False #Default value is False
