@@ -34,7 +34,7 @@ switch - Switch conversation style ( creative , balanced , precise )
 
  ## Getting authentication (Required)
 
-- Install the cookie editor extension for [Chrome](https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm) or [Firefox](https://addons.mozilla.org/en-US/firefox/addon/cookie-editor/)
+- Install the cookie editor extension for [Chrome and Edge](https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm) or [Firefox](https://addons.mozilla.org/en-US/firefox/addon/cookie-editor/)
 - Go to `bing.com`
 - Open the extension
 - Click "Export" on the bottom right (This saves your cookies to clipboard)
@@ -62,14 +62,15 @@ export ALLOWED_USER_IDS='XXXXXXXXX,XXXXXXXX,XXXXXXXX'
 export COOKIE_PATH='xxxxxx' 
 
 #Default value is False , if you set True , Anyone can use the robot
-export PUBLIC_MODE=True
-
-
-#If you want to add the bot to the group chat , please set these variables and  give the bot admin permission
-export BOT_ID='@YOURBOTID' #DON'T forget @
-export GROUP_MODE=True #Default value is False
+export PUBLIC_MODE=False
 ```
-If GROUP_MODE == True , The bot will reply to all messages in the group chat , else  the bot will only reply to @ messages in the group chat
+
+If you want to add the bot to the group chat , please set these variables and  give the bot admin permission
+```shell
+export BOT_ID='@YOURBOTID' #DON'T forget @
+export GROUP_MODE=False #Default value is False
+```
+If GROUP_MODE is True , The bot will reply to all messages in the group chat , else  the bot will only reply to @ messages in the group chat
 Private chat will always reply
 
 ## Run
