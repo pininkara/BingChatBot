@@ -15,6 +15,7 @@ PUBLIC_MODE = os.getenv('PUBLIC_MODE', False)
 
 print("\033[1;33mThe startup is successful, the configuration is as follows : ")
 print("BOT_TOKEN: " + BOT_TOKEN)
+print("BOT_ID: " + BOT_ID)
 print("ALLOWED_USER_IDS: ")
 print(ALLOWED_USER_IDS)
 print("COOKIE_PATH: " + COOKIE_PATH)
@@ -81,22 +82,22 @@ def switch_style(message):
             bot.reply_to(
                 message, "Parameter error , please choose one of (creative,balanced,precise)\n(e.g./switch balanced")
     else:
-        bot.reply_to(
-            message, '⚠️You are not authorized to switch the conversation style⚠')
+        bot.reply_to(message, '⚠️You are not authorized to switch the conversation style⚠')
 
 
 @bot.message_handler(func=lambda msg: True)
 def response_all(message):
     print('\033[0;32mMessage: ' + message.text)
     print(
-        'From: ' + message.from_user.first_name + ' ' + message.from_user.first_name + ' @' + message.from_user.username)
+        'From: ' + message.from_user.first_name + ' ' + message.from_user.last_name + ' @' + message.from_user.username)
     message_text = ''
     if message.chat.type == "private" or GROUP_MODE or message.text.startswith(BOT_ID):
         if is_allowed(message) or PUBLIC_MODE or message.chat.type == "group":
-            if BOT_ID == '':
-                message_text = message.text
+            if message.text.startswith(BOT_ID) and BOT_ID != '':
+                message_text = message.text[len(BOT_ID):]
             else:
-                message_text = message.text[len(BOT_ID) + 1:]
+                message_text = message.text
+            print("message_text: " + message_text)
             response_list = asyncio.run(bing_chat(message_text, message))
             print("\033[1;34mResponse: " + response_list[0])
             if len(response_list[0]) > 4095:
@@ -116,14 +117,13 @@ def response_all(message):
 def callback_all(callback_query):
     print("\033[0;32mCallbackQuery: " + callback_query.data)
     print(
-        'From: ' + callback_query.from_user.first_name + ' ' + callback_query.from_user.first_name + ' @' + callback_query.from_user.username)
+        'From: ' + callback_query.from_user.first_name + ' ' + callback_query.from_user.last_name + ' @' + callback_query.from_user.username)
     response_list = asyncio.run(bing_chat(callback_query.data, callback_query))
     print("\033[1;34mResponse: " + response_list[0] + '\033[1;34m')
     if len(response_list[0]) > 4095:
         for x in range(0, len(response_list[0]), 4095):
             bot.reply_to(
-                callback_query.message, response_list[0][x:x +
-                                                         4095], parse_mode='Markdown',
+                callback_query.message, response_list[0][x:x + 4095], parse_mode='Markdown',
                 reply_markup=response_list[1])
 
     else:
@@ -151,10 +151,11 @@ async def bing_chat(message_text, message):
         suggested_responses2 = re.sub(
             r'\[\^\d\^]', '', response_dict['item']['messages'][1]['suggestedResponses'][2]['text'])
         markup = quick_markup({
-            suggested_responses0: {'callback_data': suggested_responses0.encode('utf-8')[:64].decode('utf-8', 'ignore')},
-            suggested_responses1: {'callback_data': suggested_responses1.encode('utf-8')[:64].decode('utf-8', 'ignore')},
-            suggested_responses2: {'callback_data': suggested_responses2.encode(
-                'utf-8')[:64].decode('utf-8', 'ignore')}
+            suggested_responses0: {
+                'callback_data': suggested_responses0.encode('utf-8')[:64].decode('utf-8', 'ignore')},
+            suggested_responses1: {
+                'callback_data': suggested_responses1.encode('utf-8')[:64].decode('utf-8', 'ignore')},
+            suggested_responses2: {'callback_data': suggested_responses2.encode('utf-8')[:64].decode('utf-8', 'ignore')}
         }, row_width=1)
     else:
         markup = quick_markup({
@@ -165,8 +166,7 @@ async def bing_chat(message_text, message):
             response_dict['item']['throttling']:
         max_num_user_messages_in_conversation = response_dict['item'][
             'throttling']['maxNumUserMessagesInConversation']
-        num_user_messages_in_conversation = response_dict[
-            'item']['throttling']['numUserMessagesInConversation']
+        num_user_messages_in_conversation = response_dict['item']['throttling']['numUserMessagesInConversation']
         response = response + "\n----------\n"
         response = response + "Messages In Conversation : %d / %d" % (
             num_user_messages_in_conversation, max_num_user_messages_in_conversation)
@@ -190,11 +190,11 @@ async def bing_chat(message_text, message):
             r'\[\^\d\^]', '', response_dict['item']['messages'][1]['sourceAttributions'][2]['seeMoreUrl'])
         response = response + "\n----------\nReference:\n"
         response = response + \
-            "1.[%s](%s)\n" % (provider_display_name0, see_more_url0)
+                   "1.[%s](%s)\n" % (provider_display_name0, see_more_url0)
         response = response + \
-            "2.[%s](%s)\n" % (provider_display_name1, see_more_url1)
+                   "2.[%s](%s)\n" % (provider_display_name1, see_more_url1)
         response = response + \
-            "3.[%s](%s)\n" % (provider_display_name2, see_more_url2)
+                   "3.[%s](%s)\n" % (provider_display_name2, see_more_url2)
 
     markup = quick_markup({
         suggested_responses0: {'callback_data': suggested_responses0.encode('utf-8')[:64].decode('utf-8', 'ignore')},
