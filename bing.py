@@ -12,6 +12,9 @@ BOT_ID = os.getenv('BOT_ID', '')
 COOKIE_PATH = os.getenv('COOKIE_PATH', './cookie.json')
 GROUP_MODE = os.getenv('GROUP_MODE', False)
 PUBLIC_MODE = os.getenv('PUBLIC_MODE', False)
+# 2023-05-08
+# 不同环境下GROUP_MODE和PUBLIC_MODE的变量类型还不一样，有的是bool有的是str，为了统一
+# 后面的比较都先转成字符串再比较
 
 print("\033[1;33mThe startup is successful, the configuration is as follows : ")
 print("BOT_TOKEN: " + BOT_TOKEN)
@@ -35,7 +38,7 @@ conversation_style = ConversationStyle.balanced
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    if is_allowed(message) or PUBLIC_MODE or message.chat.type == "group":
+    if is_allowed(message) or str(PUBLIC_MODE) == "True" or message.chat.type == "group":
         bot.reply_to(
             message, "Bing Chat Bot By Kakanya~\n/help - Show help message\n/reset - Reset conversation\n/switch - "
                      "Switch conversation style (creative,balanced,precise)\n", reply_markup=markup)
@@ -45,7 +48,7 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['reset'])
 def send_reset(message):
-    if is_allowed(message) or PUBLIC_MODE or message.chat.type == "group":
+    if is_allowed(message) or str(PUBLIC_MODE) == "True" or message.chat.type == "group":
         try:
             if message.from_user.id not in EDGES:
                 EDGES[message.from_user.id] = Chatbot(cookie_path=COOKIE_PATH)
@@ -97,8 +100,8 @@ def response_all(message):
         'From: ', message.from_user.first_name, message.from_user.last_name, ' @', message.from_user.username)
 
     message_text = ''
-    if message.chat.type == "private" or GROUP_MODE or message.text.startswith(BOT_ID):
-        if is_allowed(message) or PUBLIC_MODE or message.chat.type == "group":
+    if message.chat.type == "private" or str(GROUP_MODE) == "True" or message.text.startswith(BOT_ID):
+        if is_allowed(message) or str(PUBLIC_MODE) == "True" or message.chat.type == "group":
             if message.text.startswith(BOT_ID) and BOT_ID != '':
                 message_text = message.text[len(BOT_ID):]
             else:
