@@ -10,11 +10,8 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 ALLOWED_USER_IDS = os.getenv('ALLOWED_USER_IDS').split(',')
 BOT_ID = os.getenv('BOT_ID', '')
 COOKIE_PATH = os.getenv('COOKIE_PATH', './cookie.json')
-GROUP_MODE = os.getenv('GROUP_MODE', False)
-PUBLIC_MODE = os.getenv('PUBLIC_MODE', False)
-# 2023-05-08
-# 不同环境下GROUP_MODE和PUBLIC_MODE的变量类型还不一样，有的是bool有的是str，为了统一
-# 后面的比较都先转成字符串再比较
+GROUP_MODE = os.getenv('GROUP_MODE', 'False')
+PUBLIC_MODE = os.getenv('PUBLIC_MODE', 'False')
 
 print("\033[1;33mThe startup is successful, the configuration is as follows : ")
 print("BOT_TOKEN: " + BOT_TOKEN)
@@ -22,8 +19,8 @@ print("BOT_ID: " + BOT_ID)
 print("ALLOWED_USER_IDS: ")
 print(ALLOWED_USER_IDS)
 print("COOKIE_PATH: " + COOKIE_PATH)
-print("GROUP_MODE: " + str(GROUP_MODE))
-print("PUBLIC_MODE: " + str(PUBLIC_MODE) + '\033[1;33m')
+print("GROUP_MODE: " + GROUP_MODE)
+print("PUBLIC_MODE: " + PUBLIC_MODE + '\033[1;33m')
 
 bot = telebot.TeleBot(BOT_TOKEN)
 EDGES = {}
@@ -33,12 +30,13 @@ not_allow_info = '⚠️You are not authorized to use this bot⚠️'
 markup = quick_markup({
     'Github': {'url': 'https://github.com/pininkara/BingChatBot'},
 }, row_width=1)
-conversation_style = ConversationStyle.balanced
+
+my_conversation_style = ConversationStyle.balanced
 
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    if is_allowed(message) or str(PUBLIC_MODE) == "True" or message.chat.type == "group":
+    if is_allowed(message) or PUBLIC_MODE == "True" or message.chat.type == "group":
         bot.reply_to(
             message, "Bing Chat Bot By Kakanya~\n/help - Show help message\n/reset - Reset conversation\n/switch - "
                      "Switch conversation style (creative,balanced,precise)\n", reply_markup=markup)
@@ -48,7 +46,7 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['reset'])
 def send_reset(message):
-    if is_allowed(message) or str(PUBLIC_MODE) == "True" or message.chat.type == "group":
+    if is_allowed(message) or PUBLIC_MODE == "True" or message.chat.type == "group":
         try:
             if message.from_user.id not in EDGES:
                 EDGES[message.from_user.id] = Chatbot(cookie_path=COOKIE_PATH)
@@ -68,7 +66,6 @@ def switch_style(message):
         message_list = message.text.split(" ")
         if len(message_list) > 1:
             if message_list[1] == "creative":
-                conversation_style = ConversationStyle.creative
                 bot.reply_to(
                     message,
                     "Switch successful , current style is creative")
@@ -100,8 +97,9 @@ def response_all(message):
         'From: ', message.from_user.first_name, message.from_user.last_name, ' @', message.from_user.username)
 
     message_text = ''
-    if message.chat.type == "private" or str(GROUP_MODE) == "True" or message.text.startswith(BOT_ID):
-        if is_allowed(message) or str(PUBLIC_MODE) == "True" or message.chat.type == "group":
+    is_reply = message.reply_to_message is not None and '@' + message.reply_to_message.from_user.username == BOT_ID
+    if message.chat.type == "private" or GROUP_MODE == "True" or message.text.startswith(BOT_ID) or is_reply:
+        if is_allowed(message) or PUBLIC_MODE == "True" or message.chat.type == "group":
             if message.text.startswith(BOT_ID) and BOT_ID != '':
                 message_text = message.text[len(BOT_ID):]
             else:
@@ -153,7 +151,7 @@ async def bing_chat(message_text, message):
     if message.from_user.id not in EDGES:
         EDGES[message.from_user.id] = Chatbot(cookie_path=COOKIE_PATH)
     response_dict = await EDGES[message.from_user.id].ask(prompt=message_text,
-                                                          conversation_style=conversation_style)
+                                                          conversation_style=my_conversation_style)
 
     if 'text' in response_dict['item']['messages'][1]:
         response = re.sub(r'\[\^\d\^]', '',
