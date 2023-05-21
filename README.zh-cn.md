@@ -73,8 +73,7 @@ export PUBLIC_MODE=False
 export BOT_ID='@YOURBOTID' #别忘了@
 export GROUP_MODE=False #默认值为 False
 ```
-如果  GROUP_MODE 为True ，bot将会回复群组里所有消息 , 否则bot只会回复@它的消息
-私聊消息一直会回复
+如果  GROUP_MODE 为True ，bot将会回复群组里所有消息 , 否则bot只会回复@它的消息。私聊消息一直会回复
 
 ## 运行
 

@@ -38,7 +38,7 @@ my_conversation_style = ConversationStyle.balanced
 def send_welcome(message):
     if is_allowed(message) or PUBLIC_MODE == "True" or message.chat.type == "group":
         bot.reply_to(
-            message, "Bing Chat Bot By Kakanya~\n/help - Show help message\n/reset - Reset conversation\n/switch - "
+            message, "Bing Chat Bot By pininkara~\n/help - Show help message\n/reset - Reset conversation\n/switch - "
                      "Switch conversation style (creative,balanced,precise)\n", reply_markup=markup)
     else:
         bot.reply_to(message, not_allow_info)

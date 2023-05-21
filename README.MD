@@ -73,8 +73,7 @@ If you want to add the bot to the group chat , please set these variables and  g
 export BOT_ID='@YOURBOTID' #DON'T forget @
 export GROUP_MODE=False #Default value is False
 ```
-If GROUP_MODE is True , The bot will reply to all messages in the group chat , else  the bot will only reply to @ messages in the group chat
-Private chat will always reply
+If GROUP_MODE is True , The bot will reply to all messages in the group chat , else  the bot will only reply to @ messages in the group chat. Private chat will always reply
 
 ## Run
 
