@@ -190,7 +190,7 @@ async def bing_chat(message_text, message):
             num_user_messages_in_conversation, max_num_user_messages_in_conversation)
 
     if num_user_messages_in_conversation >= max_num_user_messages_in_conversation:
-        await EDGES[message_text.from_user.id].reset()
+        await EDGES[message.from_user.id].reset()
         response = response + "\nAutomatic reset succeeded🎉"
 
     if len(response_dict['item']['messages'][1]['sourceAttributions']) >= 3:
