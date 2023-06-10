@@ -5,7 +5,7 @@ Bing chat Telegram bot implemented in Python that utilizes unofficial [EdgeChat]
 
 ## Known issues
 
-- ~~Different people will use the same conversation~~（fixed）
+- If Microsoft changes the message count in the conversation, the Messages In Conversation will be 5 until the cookie is updated.
 
 ## Screenshot
 
